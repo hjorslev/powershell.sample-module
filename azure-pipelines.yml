@@ -63,24 +63,6 @@ stages:
             testResultsFiles: '$(System.DefaultWorkingDirectory)/**/TestResults*.xml'
             failTaskOnFailedTests: true
 
-        - task: PowerShell@2
-          displayName: Verify code coverage
-          inputs:
-            targetType: 'inline'
-            pwsh: true
-            failOnStderr: true
-            script: Invoke-Build -Task CodeCoverage
-            workingDirectory: $(System.DefaultWorkingDirectory)
-
-        - task: PublishCodeCoverageResults@1
-          displayName: Publish code coverage results
-          condition: succeededOrFailed()
-          inputs:
-            codeCoverageTool: 'JaCoCo'
-            summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/CodeCoverageResults*.xml'
-            pathToSources: '$(System.DefaultWorkingDirectory)/$(module.Name)/'
-            failIfCoverageEmpty: true
-
   - stage: Build
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) # Create builds only from the master branch
     jobs:
